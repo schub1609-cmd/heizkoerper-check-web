@@ -1,0 +1,48 @@
+/* Ergänzungen für die Landingpage. Grundlage (Farben, Karten, Formular) kommt aus schnellcheck.css. */
+
+.held { padding-top: 32px; padding-bottom: 8px; }
+
+.knopf {
+  display: block;
+  text-align: center;
+  min-height: 52px;
+  padding: 14px 18px;
+  margin: 16px 0 4px;
+  border-radius: 10px;
+  background: var(--akzent);
+  color: var(--karte);
+  font-weight: 700;
+  text-decoration: none;
+}
+.knopf:focus-visible { outline: 3px solid var(--akzent); outline-offset: 2px; }
+
+.betont { background: var(--akzent-hell); border-color: var(--akzent); }
+
+.beispiel {
+  margin: 16px 0 0;
+  padding: 14px;
+  border: 1px solid var(--linie);
+  border-radius: 10px;
+}
+.beispiel figcaption { font-weight: 600; font-size: .95rem; margin-bottom: 10px; }
+.balken-zeile {
+  display: grid;
+  grid-template-columns: 5.2em 1fr 4.6em;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: .95rem;
+}
+.balken { height: 14px; background: var(--grund); border-radius: 7px; overflow: hidden; }
+.balken span { display: block; height: 100%; background: var(--akzent); border-radius: 7px; }
+.balken-wert { text-align: right; font-weight: 600; }
+.quelle { margin: 10px 0 0; font-size: .85rem; color: var(--text-leise); }
+
+.schritte, .liste { padding-left: 22px; margin: 0; }
+.schritte li, .liste li { margin-bottom: 10px; }
+
+.platzhalter { border-style: dashed; color: var(--text-leise); }
+
+@media (min-width: 560px) {
+  .knopf { display: inline-block; }
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tests Rechenkern</title>
+  <!-- Führt tests/rechenkern.test.js im Browser aus (für Rechner ohne Node.js).
+       Start: web\dev-server.ps1, dann http://localhost:8642/tests/browser/ -->
+  <script type="importmap">
+    { "imports": { "node:test": "./node-test.js", "node:assert/strict": "./node-assert.js" } }
+  </script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 16px; }
+    .ok { color: #2e7d4f; } .fehler { color: #b3362c; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>Tests Rechenkern</h1>
+  <p id="summe">Tests laufen …</p>
+  <ul id="liste"></ul>
+  <script type="module">
+    import { ergebnisse } from './node-test.js';
+    await import('../rechenkern.test.js');
+    const fehler = ergebnisse.filter((e) => !e.ok).length;
+    document.getElementById('summe').textContent =
+      `${ergebnisse.length - fehler} von ${ergebnisse.length} Tests bestanden`;
+    document.getElementById('summe').className = fehler ? 'fehler' : 'ok';
+    document.getElementById('liste').replaceChildren(...ergebnisse.map((e) => {
+      const li = document.createElement('li');
+      li.className = e.ok ? 'ok' : 'fehler';
+      li.textContent = e.ok ? `✓ ${e.name}` : `✗ ${e.name}: ${e.meldung}`;
+      return li;
+    }));
+    window.TESTERGEBNIS = { gesamt: ergebnisse.length, fehler };
+  </script>
+</body>
+</html>

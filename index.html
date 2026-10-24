@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- VORSCHAU: vor dem Start entfernen (siehe docs/STATUS.md) -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Heizkörper-Check für Wärmepumpen</title>
+  <meta name="description" content="Reicht dein Heizkörper für die Wärmepumpe? Überschlag Raum für Raum bei 35, 45 und 55 °C Vorlauf. Kostenloser Schnellcheck.">
+  <link rel="stylesheet" href="src/schnellcheck.css">
+  <link rel="stylesheet" href="src/landing.css">
+</head>
+<body>
+  <!-- VORSCHAU: vor dem Start entfernen -->
+  <p class="vorschau" role="note">Vorschau zum Ausprobieren · noch nicht offiziell gestartet</p>
+  <header class="kopf held">
+    <p class="marke">Heizkörper-Check</p>
+    <h1>Reicht dein Heizkörper für die Wärmepumpe? Finde es heraus, bevor du Angebote einholst.</h1>
+    <p class="einleitung">Ein Überschlag Raum für Raum: Wie viel Wärme geben deine Heizkörper bei 35, 45 und 55 °C Vorlauftemperatur ab, und welcher Raum bremst?</p>
+    <a class="knopf" href="schnellcheck.html">Zum kostenlosen Schnellcheck</a>
+  </header>
+
+  <main>
+    <section class="karte">
+      <h2>Worum geht es?</h2>
+      <p>Eine Wärmepumpe arbeitet am effizientesten mit niedriger Vorlauftemperatur (Temperatur des Heizwassers, das in die Heizkörper fließt). Viele Heizkörper wurden aber für deutlich heißeres Wasser ausgelegt. Bei niedrigerer Temperatur geben sie weniger Wärme ab, und ob das für deinen Raum noch reicht, sieht man ihnen nicht an.</p>
+      <figure class="beispiel">
+        <figcaption>Beispielrechnung: Plattenheizkörper, Leistung angegeben für 75/65/20 °C</figcaption>
+        <div class="balken-zeile">
+          <span class="balken-name">75/65 °C</span>
+          <span class="balken"><span style="width:100%"></span></span>
+          <span class="balken-wert">100 %</span>
+        </div>
+        <div class="balken-zeile">
+          <span class="balken-name">55/45 °C</span>
+          <span class="balken"><span style="width:51%"></span></span>
+          <span class="balken-wert">ca. 51 %</span>
+        </div>
+        <div class="balken-zeile">
+          <span class="balken-name">45/35 °C</span>
+          <span class="balken"><span style="width:30%"></span></span>
+          <span class="balken-wert">ca. 30 %</span>
+        </div>
+        <p class="quelle">Raumtemperatur 20 °C, Exponent 1,3 (üblicher Wert für Plattenheizkörper). Gerechnet nach EN 442 mit unserem geprüften Rechenkern.</p>
+      </figure>
+    </section>
+
+    <section class="karte">
+      <h2>So funktioniert es</h2>
+      <ol class="schritte">
+        <li><strong>Aufnehmen:</strong> Für jeden Heizkörper die Normleistung notieren (Typenschild, Datenblatt oder Herstellerseite) und für jeden Raum die Heizlast, wenn bekannt.</li>
+        <li><strong>Rechnen:</strong> Der Check rechnet aus, wie viel Wärme jeder Heizkörper bei 35, 45 und 55 °C Vorlauf abgibt und welche Vorlauftemperatur der Raum braucht.</li>
+        <li><strong>Mitnehmen:</strong> Du siehst eine Ampel pro Raum und die Räume, die die Vorlauftemperatur bestimmen. Damit gehst du gut vorbereitet ins Gespräch mit dem Heizungsbauer.</li>
+      </ol>
+    </section>
+
+    <section class="karte betont">
+      <h2>Probier es gleich aus</h2>
+      <p>Kostenlos und ohne Anmeldung, für einen Heizkörper in einem Raum. Deine Eingaben bleiben in deinem Browser.</p>
+      <a class="knopf" href="schnellcheck.html">Zum kostenlosen Schnellcheck</a>
+    </section>
+
+    <section class="karte">
+      <h2>Die Vollversion (in Arbeit)</h2>
+      <ul class="liste">
+        <li><strong>Excel-Vorlage</strong> für das ganze Haus: alle Räume und Heizkörper, Ampel pro Raum, maßgeblicher Raum, Ergebnisblatt auf einer A4-Seite für den Heizungsbauer. Auch für Google Sheets.</li>
+        <li><strong>Leitfaden</strong> in Alltagssprache: Heizkörper erkennen, Werte finden, Ergebnis verstehen, typische Lösungen.</li>
+        <li><strong>Checkliste</strong> zum Ausdrucken für die Aufnahme vor Ort.</li>
+        <li><strong>Später:</strong> eine App fürs Handy.</li>
+      </ul>
+    </section>
+
+    <section class="karte">
+      <h2>Ehrliche Grenzen</h2>
+      <p>Der Heizkörper-Check ist ein Überschlag zur Orientierung. Er ersetzt keine Heizlastberechnung nach DIN EN 12831 und keinen hydraulischen Abgleich (Einstellung der Wassermengen an jedem Heizkörper durch den Fachbetrieb). Für Förderanträge ist er nicht geeignet.</p>
+      <p>Das Ergebnis ist nur so gut wie die Eingaben. Ohne Datenblatt wird zum Beispiel ein üblicher Exponent angenommen, und eine geschätzte Heizlast macht das Ergebnis unsicherer. Die Annahmen stehen immer beim Ergebnis.</p>
+    </section>
+
+    <section class="karte platzhalter" aria-label="Über mich">
+      <h2>Über mich</h2>
+      <p>[Platzhalter: Was Uwe über sich zeigen möchte, folgt.]</p>
+    </section>
+
+    <section class="karte teaser" id="warteliste-bereich">
+      <h2>Lass dich benachrichtigen, wenn die Vollversion fertig ist</h2>
+      <p>Trag deine E-Mail-Adresse ein. Du bekommst eine Nachricht, sobald die Vorlage für das ganze Haus verfügbar ist.</p>
+      <form id="warteliste" novalidate>
+        <label for="email">E-Mail-Adresse</label>
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@beispiel.de">
+        <button type="submit">Auf die Warteliste</button>
+        <p id="warteliste-meldung" class="meldung" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="fuss">
+    <p>Diese Seite setzt keine Cookies und nutzt keine Tracker.</p>
+    <p>Impressum: [von Uwe/Rechtsberatung einzufügen] · Datenschutz: [von Uwe/Rechtsberatung einzufügen]</p>
+    <p>Stand 24.10.2026 · Arbeitsname „Heizkörper-Check“</p>
+  </footer>
+
+  <script type="module" src="src/warteliste.js"></script>
+</body>
+</html>

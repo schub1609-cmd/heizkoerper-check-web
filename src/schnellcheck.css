@@ -1,0 +1,226 @@
+/* Schnellcheck – mobil zuerst. Ampelfarben nur für Ergebnisse, sonst ruhige Grundfarben. */
+:root {
+  --grund: #f6f5f1;
+  --karte: #ffffff;
+  --text: #1f2a30;
+  --text-leise: #56636b;
+  --linie: #d9dcd6;
+  --akzent: #2f5d73;
+  --akzent-hell: #e4edf1;
+  --gruen: #2e7d4f;
+  --gruen-hell: #e3f2e8;
+  --gelb: #a46a00;
+  --gelb-hell: #fdf1d8;
+  --rot: #b3362c;
+  --rot-hell: #fbe5e2;
+  --fehler: #b3362c;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --grund: #151a1d;
+    --karte: #1e2529;
+    --text: #e7ecee;
+    --text-leise: #a5b1b8;
+    --linie: #36414a;
+    --akzent: #8cc1d9;
+    --akzent-hell: #24343c;
+    --gruen: #6fcf97;
+    --gruen-hell: #1d3328;
+    --gelb: #f2c14e;
+    --gelb-hell: #3a2f16;
+    --rot: #f08a80;
+    --rot-hell: #3d2220;
+    --fehler: #f08a80;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--grund);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.kopf, main, .fuss {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.kopf { padding-top: 24px; }
+.marke { margin: 0; color: var(--akzent); font-weight: 600; letter-spacing: .02em; }
+h1 { font-size: 1.6rem; line-height: 1.25; margin: .3em 0 .4em; }
+h2 { font-size: 1.2rem; margin: 0 0 .8em; }
+.einleitung { color: var(--text-leise); margin-top: 0; }
+
+.karte {
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 14px;
+  padding: 18px 16px;
+  margin: 16px 0;
+}
+
+.feld { margin-bottom: 18px; }
+.feld-kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+label { font-weight: 600; }
+.optional { font-weight: 400; color: var(--text-leise); }
+
+.hilfe-knopf {
+  flex: none;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--akzent);
+  background: var(--karte);
+  color: var(--akzent);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.hilfe-knopf[aria-expanded="true"] { background: var(--akzent); color: var(--karte); }
+
+.hilfe {
+  background: var(--akzent-hell);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  font-size: .95rem;
+}
+
+input, select, button {
+  font: inherit;
+  color: inherit;
+}
+
+input, select {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--linie);
+  border-radius: 10px;
+  background: var(--karte);
+  font-size: 1.1rem;
+}
+input:focus, select:focus, button:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--akzent);
+  outline-offset: 1px;
+}
+input[aria-invalid="true"] { border-color: var(--fehler); }
+
+.eingabe-einheit { position: relative; }
+.eingabe-einheit input { padding-right: 52px; }
+.eingabe-einheit span {
+  position: absolute;
+  right: 14px; top: 50%;
+  transform: translateY(-38%);
+  color: var(--text-leise);
+}
+
+.fehler { color: var(--fehler); margin: 4px 0 0; font-size: .95rem; min-height: 0; }
+.fehler:empty { display: none; }
+
+.weitere summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--akzent);
+  padding: 8px 0;
+  margin-bottom: 8px;
+}
+
+.fazit {
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-left: 5px solid var(--linie);
+  padding: 4px 0 4px 12px;
+  margin: 0 0 16px;
+}
+.fazit-gruen { border-color: var(--gruen); }
+.fazit-gelb { border-color: var(--gelb); }
+.fazit-rot { border-color: var(--rot); }
+
+.spalten {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.spalte {
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  border: 1px solid var(--linie);
+}
+.spalte p { margin: 0; }
+.spalte-kopf { font-size: .85rem; color: var(--text-leise); font-weight: 600; margin-bottom: 6px !important; }
+.spalte-fehler { font-size: .85rem; color: var(--fehler); }
+.wert-gross { font-size: 1.35rem; font-weight: 700; }
+.wert-mittel { font-size: 1rem; font-weight: 600; margin-top: 6px !important; }
+.wert-klein { font-size: .8rem; color: var(--text-leise); }
+
+.ampel-text { font-weight: 700; font-size: .95rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.punkt { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+.ampel-gruen { background: var(--gruen-hell); border-color: var(--gruen); }
+.ampel-gruen .ampel-text { color: var(--gruen); }
+.ampel-gruen .punkt { background: var(--gruen); }
+.ampel-gelb { background: var(--gelb-hell); border-color: var(--gelb); }
+.ampel-gelb .ampel-text { color: var(--gelb); }
+.ampel-gelb .punkt { background: var(--gelb); }
+.ampel-rot { background: var(--rot-hell); border-color: var(--rot); }
+.ampel-rot .ampel-text { color: var(--rot); }
+.ampel-rot .punkt { background: var(--rot); }
+
+.vorlauf { margin: 14px 0 0; font-weight: 600; }
+.vorlauf:empty { display: none; }
+.annahmen { margin: 14px 0 0; padding-left: 20px; color: var(--text-leise); font-size: .9rem; }
+.annahmen:empty { display: none; }
+
+.hinweis {
+  border: 1px solid var(--linie);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: .95rem;
+  color: var(--text-leise);
+}
+
+.teaser label { display: block; margin-bottom: 0; }
+.teaser button {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: var(--akzent);
+  color: var(--karte);
+  font-weight: 700;
+  cursor: pointer;
+}
+.meldung { margin: 10px 0 0; font-size: .95rem; }
+.meldung:empty { display: none; }
+
+.fuss { color: var(--text-leise); font-size: .85rem; padding-bottom: 32px; }
+
+@media (min-width: 560px) {
+  h1 { font-size: 2rem; }
+  .karte { padding: 24px; }
+  .spalte { padding: 14px 10px; }
+  .wert-gross { font-size: 1.6rem; }
+}
+
+/* VORSCHAU-Hinweis, vor dem Start entfernen */
+.vorschau {
+  margin: 0;
+  padding: 6px 16px;
+  text-align: center;
+  font-size: .85rem;
+  background: var(--akzent-hell);
+  color: var(--text);
+  border-bottom: 1px solid var(--linie);
+}
