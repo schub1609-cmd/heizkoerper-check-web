@@ -16,7 +16,12 @@ import {
   RechenFehler,
   NORM_EN442,
   NORM_ALT,
+  BEDINGUNGEN,
+  exponentAusZweiWerten,
+  katalogNormleistung,
+  katalogAbweichung,
 } from '../src/rechenkern.js';
+import { BAUARTEN, RICHTWERTE, QUELLEN } from '../src/heizkoerper-daten.js';
 
 const n = 1.3;
 const ti = 20;
@@ -141,4 +146,56 @@ test('Umkehrrechnung: deckbare Heizlast in W/m²', () => {
   assert.throws(() => deckbareFlaechenlast(600, 0), RechenFehler);
   assert.throws(() => deckbareFlaechenlast(600, -5), RechenFehler);
   assert.throws(() => deckbareFlaechenlast(-1, 10), RechenFehler);
+});
+
+test('Exponent aus zwei Katalogwerten (Buderus K-Profil 600/22: 1682 → 855 W/m, n = 1,31)', () => {
+  nahe(exponentAusZweiWerten(1682, BEDINGUNGEN['75/65/20'], 855, BEDINGUNGEN['55/45/20']), 1.31, 0.005, 'n');
+  // Rückprobe mit dem Pflicht-Prüfwert: 1000 W, n = 1,3 → 55/45 ergibt n = 1,3
+  const q55 = leistung(1000, n, 55, 45, ti);
+  nahe(exponentAusZweiWerten(1000, NORM_EN442, q55, BEDINGUNGEN['55/45/20']), 1.3, 1e-9, 'n');
+  assert.throws(() => exponentAusZweiWerten(1000, NORM_EN442, 900, NORM_EN442), RechenFehler);
+});
+
+test('Normleistung aus Katalogwert je Meter, je Glied, je Stück', () => {
+  nahe(katalogNormleistung(1682, 'je_meter', 1200), 2018.4, 1e-9, 'je Meter');
+  assert.equal(katalogNormleistung(122, 'je_glied', 10), 1220);
+  assert.equal(katalogNormleistung(631, 'je_stueck'), 631);
+  assert.throws(() => katalogNormleistung(1682, 'je_meter', 0), RechenFehler);
+  assert.throws(() => katalogNormleistung(122, 'je_glied', 10.5), RechenFehler);
+  assert.throws(() => katalogNormleistung(122, 'unbekannt', 1), RechenFehler);
+});
+
+test('Richtwerte: plausible Werte, eigene Rundung, Leistung steigt mit Bauhöhe und Typ', () => {
+  for (const t of RICHTWERTE) {
+    assert.ok(t.menge.min > 0 && t.menge.max > t.menge.min, `${t.name}: Menge`);
+    for (const [h, , typ, nk, q75, , streuung] of t.zeilen) {
+      assert.ok(nk >= 1.2 && nk <= 1.35, `${t.name} ${h}/${typ}: n = ${nk}`);
+      const schritt = t.bezug === 'je_meter' ? 10 : 5;
+      assert.equal(q75 % schritt, 0, `${t.name} ${h}/${typ}: nicht auf ${schritt} W gerundet`);
+      assert.ok(streuung >= 0 && streuung <= 15, `${t.name} ${h}/${typ}: Streuung ${streuung} %`);
+    }
+  }
+  const platten = RICHTWERTE.find((t) => t.gruppe === 'Plattenheizkörper');
+  const q = (typ, h) => platten.zeilen.find((z) => z[2] === typ && z[0] === h)[4];
+  for (const typ of ['10', '11', '12', '20', '21', '22', '30', '33']) {
+    for (const [h1, h2] of [[300, 400], [400, 500], [500, 600], [600, 900]]) assert.ok(q(typ, h2) > q(typ, h1), `Typ ${typ}: ${h2} > ${h1}`);
+  }
+  for (const h of [300, 400, 500, 600, 900]) {
+    assert.ok(q('11', h) > q('10', h) && q('22', h) > q('21', h) && q('21', h) > q('20', h) && q('33', h) > q('22', h), `Typenfolge bei ${h} mm`);
+  }
+});
+
+test('Richtwerte: jede Zeile passt zu einer Bauart, jede Quelle existiert', () => {
+  const typen = new Set(BAUARTEN.map((b) => b.katalogTyp).filter(Boolean));
+  for (const t of RICHTWERTE) {
+    for (const z of t.zeilen) assert.ok(typen.has(z[2]), `${t.name}: Typ ${z[2]} ohne Bauart`);
+    for (const q of t.quellen) assert.ok(QUELLEN[q], `${t.name}: Quelle ${q} fehlt`);
+  }
+});
+
+test('Bauarten: Standard-Exponent liegt in der Spanne, jede Quelle existiert', () => {
+  for (const b of BAUARTEN) {
+    assert.ok(b.n_standard >= b.n_spanne[0] && b.n_standard <= b.n_spanne[1], `${b.id}: n außerhalb der Spanne`);
+    for (const q of b.quellen) assert.ok(QUELLEN[q], `${b.id}: Quelle ${q} fehlt`);
+  }
 });

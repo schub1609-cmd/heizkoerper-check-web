@@ -8,6 +8,7 @@
   <title>Schnellcheck – Heizkörper-Check</title>
   <meta name="description" content="Kostenloser Schnellcheck: Schafft dein Heizkörper die Heizlast bei 35, 45 oder 55 °C Vorlauf?">
   <link rel="stylesheet" href="src/schnellcheck.css">
+  <link rel="stylesheet" href="src/heizkoerper-auswahl.css">
 </head>
 <body>
   <!-- VORSCHAU: vor dem Start entfernen -->
@@ -21,6 +22,43 @@
   <main>
     <form id="eingaben" class="karte" novalidate autocomplete="off">
       <h2>Deine Angaben</h2>
+
+      <fieldset class="feld bauart-feld">
+        <div class="feld-kopf">
+          <legend>Welche Bauart hat dein Heizkörper?</legend>
+          <button type="button" class="hilfe-knopf" aria-expanded="false" aria-controls="hilfe-bauart" aria-label="Hilfe zur Bauart">?</button>
+        </div>
+        <p id="hilfe-bauart" class="hilfe" hidden>Die Bauart bestimmt, wie stark die Leistung bei niedrigeren Temperaturen sinkt (Heizkörperexponent). <strong>Plattenheizkörper:</strong> Schau von oben in den Heizkörper. Zähle die glatten Platten (erste Ziffer) und die Lagen mit gezackten Blechen, den Lamellen (zweite Ziffer). Zwei Platten mit zwei Lagen Lamellen sind Typ 22. Du bist unsicher? Dann wähle nichts, wir rechnen dann wie für einen Plattenheizkörper.</p>
+        <div id="bauarten" class="bauarten"></div>
+        <p id="bauart-info" class="wert-klein bauart-info"></p>
+      </fieldset>
+
+      <fieldset class="feld">
+        <legend>Woher kennst du die Leistung?</legend>
+        <div class="umschalter">
+          <label><input type="radio" name="leistung-quelle" value="eingabe" checked> Ich gebe die Normleistung ein</label>
+          <label><input type="radio" name="leistung-quelle" value="katalog"> Aus Bauart und Maßen schätzen (Richtwert)</label>
+        </div>
+        <div id="katalog" class="katalog" hidden>
+          <p id="katalog-leer" class="wert-klein" hidden>Für diese Bauart haben wir noch keine Richtwerte. Richtwerte gibt es für Plattenheizkörper (Typ 10 bis 33) und Guss-Gliederheizkörper. Gib die Normleistung unten selbst ein.</p>
+          <div id="katalog-felder">
+            <label for="katalog-hoehe" id="katalog-hoehe-label">Bauhöhe</label>
+            <select id="katalog-hoehe"></select>
+            <div class="feld-kopf">
+              <label for="katalog-laenge" id="katalog-menge-label">Baulänge</label>
+              <button type="button" class="hilfe-knopf" aria-expanded="false" aria-controls="hilfe-katalog-laenge" aria-label="Hilfe zur Baulänge">?</button>
+            </div>
+            <p id="hilfe-katalog-laenge" class="hilfe" hidden><span id="hilfe-katalog-laenge-text">Die Breite des Heizkörpers in Millimetern, ohne Ventile und Anschlüsse.</span> Beispiel für eine Eingabe: 1200</p>
+            <div class="eingabe-einheit">
+              <input id="katalog-laenge" type="text" inputmode="numeric" placeholder="z. B. 1200">
+              <span id="katalog-menge-einheit">mm</span>
+            </div>
+            <p class="fehler" id="fehler-katalog-laenge" role="alert"></p>
+            <p id="katalog-ergebnis" class="wert-klein"></p>
+            <p id="katalog-herleitung" class="wert-klein"></p>
+          </div>
+        </div>
+      </fieldset>
 
       <div class="feld">
         <div class="feld-kopf">
@@ -140,7 +178,7 @@
 
   <footer class="fuss">
     <p>Deine Eingaben bleiben in deinem Browser. Diese Seite sendet keine Daten, setzt keine Cookies und nutzt keine Tracker.</p>
-    <p>Schnellcheck v0.1 · Stand 24.10.2026 · Impressum und Datenschutz: [von Uwe/Rechtsberatung einzufügen]</p>
+    <p>Schnellcheck v0.2 · Stand 25.10.2026 · Impressum und Datenschutz: [von Uwe/Rechtsberatung einzufügen]</p>
   </footer>
 
   <script type="module" src="src/schnellcheck.js"></script>

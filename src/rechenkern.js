@@ -19,6 +19,15 @@ export const STANDARD_EXPONENT_PLATTE = 1.3;
 /** Ampelgrenzen in % Deckung (bestätigt von Uwe am 24.10.2026): grün ≥ 100, gelb 85 – < 100, rot < 85. */
 export const AMPEL_GRENZEN = Object.freeze({ gruen: 100, gelb: 85 });
 
+/** Weitere übliche Katalogbedingungen (Vorlauf/Rücklauf/Raum in °C). */
+export const BEDINGUNGEN = Object.freeze({
+  '90/70/20': NORM_ALT,
+  '75/65/20': NORM_EN442,
+  '70/55/20': Object.freeze({ tV: 70, tR: 55, ti: 20 }),
+  '55/45/20': Object.freeze({ tV: 55, tR: 45, ti: 20 }),
+  '45/40/20': Object.freeze({ tV: 45, tR: 40, ti: 20 }),
+});
+
 /** Obergrenze der Suche nach der benötigten Vorlauftemperatur in °C. */
 export const MAX_VORLAUF = 75;
 
@@ -227,4 +236,67 @@ export function ampel(deckungProzent, grenzen = AMPEL_GRENZEN) {
   if (deckungProzent >= grenzen.gruen) return 'gruen';
   if (deckungProzent >= grenzen.gelb) return 'gelb';
   return 'rot';
+}
+
+/**
+ * Heizkörperexponent aus zwei Katalogwerten zurückrechnen.
+ * n = ln(Q₂ / Q₁) / ln(ΔT_ln,2 / ΔT_ln,1)
+ * Beispiel Buderus K-Profil 600/22: 1682 W/m bei 75/65/20 und 855 W/m bei 55/45/20 → n ≈ 1,31.
+ * @param {number} Q1 Leistung bei Bedingung 1 in W
+ * @param {{tV:number,tR:number,ti:number}} bed1 Bedingung 1
+ * @param {number} Q2 Leistung bei Bedingung 2 in W
+ * @param {{tV:number,tR:number,ti:number}} bed2 Bedingung 2
+ * @returns {number} Exponent n
+ */
+export function exponentAusZweiWerten(Q1, bed1, Q2, bed2) {
+  pruefePositiv(Q1, 'Die erste Leistung');
+  pruefePositiv(Q2, 'Die zweite Leistung');
+  const dt1 = dTln(bed1.tV, bed1.tR, bed1.ti);
+  const dt2 = dTln(bed2.tV, bed2.tR, bed2.ti);
+  if (Math.abs(Math.log(dt2 / dt1)) < 1e-6) {
+    throw new RechenFehler('Die beiden Temperaturbedingungen sind zu ähnlich, um den Exponenten zu bestimmen.');
+  }
+  return Math.log(Q2 / Q1) / Math.log(dt2 / dt1);
+}
+
+/**
+ * Normleistung aus einem Katalogwert je Meter, je Glied oder je Stück.
+ * je_meter: Q_N = Wert · Baulänge / 1000 · je_glied: Q_N = Wert · Gliederzahl · je_stueck: Q_N = Wert
+ * @param {number} wert Katalogleistung in W/m, W/Glied oder W
+ * @param {'je_meter'|'je_glied'|'je_stueck'} bezug
+ * @param {number} [menge] Baulänge in mm (je_meter) bzw. Gliederzahl (je_glied)
+ * @returns {number} Normleistung in W
+ */
+export function katalogNormleistung(wert, bezug, menge) {
+  pruefePositiv(wert, 'Der Katalogwert');
+  if (bezug === 'je_stueck') return wert;
+  if (bezug === 'je_meter') {
+    pruefePositiv(menge, 'Die Baulänge');
+    return (wert * menge) / 1000;
+  }
+  if (bezug === 'je_glied') {
+    pruefePositiv(menge, 'Die Gliederzahl');
+    if (!Number.isInteger(menge)) throw new RechenFehler('Die Gliederzahl muss eine ganze Zahl sein.');
+    return wert * menge;
+  }
+  throw new RechenFehler('Unbekannter Bezug des Katalogwerts.');
+}
+
+/**
+ * Prüft, ob Katalogwerte bei mehreren Bedingungen zur Rechnung mit Q_N und n passen.
+ * Liefert die größte relative Abweichung (0,02 = 2 %). Über 2 % sollte eine Warnung erscheinen.
+ * Kataloge runden auf ganze Watt; 1 W Abweichung wird deshalb nicht gezählt.
+ * @param {number} QN Leistung bei 75/65/20 in W
+ * @param {number} n Exponent laut Katalog
+ * @param {Array<{bed:{tV:number,tR:number,ti:number}, Q:number}>} weitere weitere Katalogwerte
+ * @returns {number} größte relative Abweichung
+ */
+export function katalogAbweichung(QN, n, weitere) {
+  let max = 0;
+  for (const { bed, Q } of weitere) {
+    pruefePositiv(Q, 'Der Katalogwert');
+    const gerechnet = leistung(QN, n, bed.tV, bed.tR, bed.ti);
+    max = Math.max(max, Math.max(0, Math.abs(gerechnet - Q) - 1) / Q);
+  }
+  return max;
 }

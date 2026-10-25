@@ -4,7 +4,6 @@
 import {
   NORM_EN442,
   NORM_ALT,
-  STANDARD_EXPONENT_PLATTE,
   raumLeistung,
   benoetigteVorlauftemperatur,
   deckung,
@@ -13,6 +12,7 @@ import {
   RechenFehler,
 } from './rechenkern.js';
 import './warteliste.js';
+import { initAuswahl, herkunftHinweise } from './heizkoerper-auswahl.js';
 
 const VORLAUF_STUFEN = [35, 45, 55];
 const WP_GRENZE_VORLAUF = 55; // Skill 1.6: darüber Hinweis auf Effizienzverlust
@@ -230,10 +230,7 @@ function zeigeFazit(spalten, vorlauf, werte) {
 }
 
 function zeigeAnnahmen(werte) {
-  const punkte = [];
-  if (werte.exponent === STANDARD_EXPONENT_PLATTE) {
-    punkte.push('Exponent 1,3 angenommen (üblich für Plattenheizkörper). Mit dem Wert aus dem Datenblatt wird das Ergebnis genauer.');
-  }
+  const punkte = herkunftHinweise(werte.exponent);
   punkte.push(`Raumtemperatur ${zahl(werte.ti, 1)} °C, Spreizung ${zahl(werte.spreizung, 1)} K.`);
   if (!werte.heizlast) punkte.push('Ohne Heizlast keine Ampel: Die W/m²-Angabe ist eine Umrechnung, keine Schätzung der Heizlast.');
   $('annahmen').replaceChildren(...punkte.map((t) => {
@@ -253,6 +250,7 @@ for (const knopf of document.querySelectorAll('.hilfe-knopf')) {
   });
 }
 
+initAuswahl(berechne);
 $('eingaben').addEventListener('input', berechne);
 $('eingaben').addEventListener('submit', (e) => e.preventDefault());
 
